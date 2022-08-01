@@ -65,6 +65,9 @@ void snake::update_tail() {
 };
 
 void snake::clear_tail(char* background) {
+    std::cout << "tail_row:" << snake_coor.tail_row << std::endl;
+    std::cout << "tail_col:" << snake_coor.tail_col << std::endl << "---------------\n";
+
     *(background+50*(snake_coor.tail_row-1)+snake_coor.tail_col) = ' ';
 };
 
@@ -111,8 +114,8 @@ bool snake::key_move(char* background, int dir) {
     else {
         snake_coor.dir_list.push_back(dir);
         plt_snake(background);
-        update_tail();
         clear_tail(background);
+        update_tail();
         return true;
     }
 
