@@ -111,8 +111,8 @@ bool snake::key_move(char* background, int dir) {
     else {
         snake_coor.dir_list.push_back(dir);
         plt_snake(background);
-        //update_tail();
-        //clear_tail(background);
+        update_tail();
+        clear_tail(background);
         return true;
     }
 
