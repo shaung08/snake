@@ -117,3 +117,17 @@ bool snake::key_move(char* background, int dir) {
     }
 
 }
+
+bool snake::game_move(char* background) {
+    set_head(MoveHead::HEAD);
+    move(snake_coor.dir_list.back());
+    if(check_body(background))
+        return false;
+    else {
+        snake_coor.dir_list.push_back(snake_coor.dir_list.back());
+        plt_snake(background);
+        //update_tail();
+        //clear_tail(background);
+        return true;
+    }
+}
