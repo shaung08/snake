@@ -27,20 +27,26 @@ struct snakecoor {
 class snake
 {
 private:
-    std::vector<int>::iterator it;
     int* row;
     int* col;
+    
 public:
     snake(char* background, int height, int width);
     ~snake();
-    void init_snake(char* background);
+
     bool check_body(char* background);
+    bool key_move(char* background, int dir);
+
+    int move(int dir);
+    int undo_move(int dir);
+    int adjust_direction(int dir);
+    
+    void init_snake(char* background);
     void plt_snake(char* background);
     void update_tail();
     void clear_tail(char* background);
-    int move(int dir);
     void set_head(MoveHead head);
-    bool key_move(char* background, int dir);
+
     snakecoor snake_coor;
 };
 
