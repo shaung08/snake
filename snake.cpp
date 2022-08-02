@@ -18,20 +18,53 @@ void snake::init_snake(char* background) {
     set_head(MoveHead::TAIL);
     plt_snake(background);
     int x, dir;
+    std::vector<int> tail_l{};
     srand(time(NULL));
     for (int i = 1; i < snake_coor.body_len; i++) {
         x = rand();
         dir = x % 4;
         move(dir);
+        std::cout << "direction:" << dir << std::endl;
+        std::cout << "tail_row: " << *row << std::endl;
+        std::cout << "tail_col: " << *col << std::endl;
+
         if (check_body(background)) {
+            std::cout << "------------------\n";
+            undo_move(dir);
+            std::cout << "undo_tail_row: " << *row << std::endl;
+            std::cout << "undo_tail_col: " << *col << std::endl;
             i--;
         }
         else {
-            snake_coor.dir_list.push_back(dir);
+            dir = adjust_direction(dir);
+            tail_l.push_back(dir);
             plt_snake(background);
         }
     }
+    snake_coor.dir_list.insert(snake_coor.dir_list.end(), {tail_l[1], tail_l[0]});
+
+    std::vector<int>::iterator it;
+    for (it = snake_coor.dir_list.begin(); it != snake_coor.dir_list.end(); it++) {
+        std::cout << *it << std::endl;
+    }
 };
+
+int snake::adjust_direction(int dir) {
+    switch (dir)
+    {
+        case Direction::UP:
+            return Direction::DOWN;
+        case Direction::DOWN:
+            return Direction::UP;
+        case Direction::LEFT:
+            return Direction::RIGHT;
+        case Direction::RIGHT:
+            return Direction::LEFT;
+        default:
+          break;
+    }
+}
+
 
 bool snake::check_body(char* background) {
     if (*(background+50*(*row-1)+*col) == '*')
@@ -45,29 +78,27 @@ void snake::plt_snake(char* background) {
 };
 
 void snake::update_tail() {
-    it = snake_coor.dir_list.begin();
+    std::vector<int>::iterator it = snake_coor.dir_list.begin();
+    std::cout << "direction:" << snake_coor.dir_list[0] << std::endl;
     switch (snake_coor.dir_list[0])
     {
         case Direction::UP:
-            snake_coor.tail_row--;
+            *row -= 1;
             break;
         case Direction::DOWN:
-            snake_coor.tail_row++;
+            *row += 1;
             break;
         case Direction::LEFT:
-            snake_coor.tail_col--;
+            *col -= 1;
             break;
         case Direction::RIGHT:
-            snake_coor.tail_col++;
+            *col += 1;
             break;
     }
     snake_coor.dir_list.erase(it);
 };
 
 void snake::clear_tail(char* background) {
-    std::cout << "tail_row:" << snake_coor.tail_row << std::endl;
-    std::cout << "tail_col:" << snake_coor.tail_col << std::endl << "---------------\n";
-
     *(background+50*(snake_coor.tail_row-1)+snake_coor.tail_col) = ' ';
 };
 
@@ -85,6 +116,27 @@ int snake::move(int dir) {
             break;
         case Direction::RIGHT: 
             *col += 1;
+            break;
+
+        default:
+            break;
+    }
+};
+
+int snake::undo_move(int dir) {
+    switch (dir)
+    {
+        case Direction::UP:
+            *row += 1;
+            break;
+        case Direction::DOWN:
+            *row -= 1;
+            break;
+        case Direction::LEFT:
+            *col += 1;
+            break;
+        case Direction::RIGHT: 
+            *col -= 1;
             break;
 
         default:
@@ -114,8 +166,11 @@ bool snake::key_move(char* background, int dir) {
     else {
         snake_coor.dir_list.push_back(dir);
         plt_snake(background);
+        set_head(MoveHead::TAIL);
         clear_tail(background);
         update_tail();
+        std::cout << "tail_row: " << *row << std::endl;
+        std::cout << "tail_col: " << *col << std::endl;
         return true;
     }
 

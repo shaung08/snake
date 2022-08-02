@@ -12,8 +12,6 @@
 #define width 50
 #define height 25
 
-
-
 int main () {
     canvas canvdraw;
     snake snakebody(*canvdraw.background, std::floor(height/2), std::floor(width/2));
