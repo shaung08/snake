@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <thread>
+#include <unistd.h>
 
 #include "canvas.h"
 #include "canvas.cpp"
@@ -13,18 +14,28 @@
 #define width 50
 #define height 25
 
-void snake_thread(*canvdraw.background) {
+canvas canvdraw;
+snake snakebody(*canvdraw.background, std::floor(height/2), std::floor(width/2));
+
+void snake_thread(char* background) {
     // set moving speed
-    speed = 0.01 // 0.01s move a pixel
+    float speed = 0.01; // 0.01s move a pixel
+    int dir;
     while (true) {
         // move snake regular
-
-        // put canvas background into blocking queue
-
-        // set delay time
+        dir = snakebody.snake_coor.dir_list[snakebody.snake_coor.dir_list.size()-1];
+        if (snakebody.move_snake(background, dir)) {
+            // set delay time
+            sleep(1);
+            continue;
+        }
+        else {
+            break;
+        }
     }
 }
 
+/*
 void keyboard_thread() {
     keyboard userkey;
     char key;
@@ -36,7 +47,6 @@ void keyboard_thread() {
         // save direction to blocking queue
         if(snakebody.key_move(*canvdraw.background, direction)) {
             // put canvas background into blocking queue
-
             continue;
         }
         else {
@@ -45,25 +55,25 @@ void keyboard_thread() {
         }
     }
 
-}
+}*/
+
 
 void canvas_thread() {
-  while(true) {
-    // get canvas background blocking queue
-
-    // show canvas background
-    canvdraw.show_canvas();
-  }
+    while(true) {
+        // show canvas background
+        canvdraw.show_canvas();
+        sleep(1);
+    }
 }
 
 
 int main () {
-    canvas canvdraw;
-  
-    std::thread snake_thread(*canvdraw.background);
-    std::thread keyboard_thread(*canvdraw.background);
-    std::thread canvas_thread();
 
+    std::thread s_thread(snake_thread, *canvdraw.background);
+    //std::thread keyboard_thread(*canvdraw.background);
+    std::thread c_thread(canvas_thread);
+    s_thread.join();
+    c_thread.join();
     /*
     canvas canvdraw;
     snake snakebody(*canvdraw.background, std::floor(height/2), std::floor(width/2));
@@ -89,6 +99,5 @@ int main () {
     }
     */
     
-
     return 0;
 }

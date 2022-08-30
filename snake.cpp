@@ -146,7 +146,7 @@ void snake::set_head(MoveHead head) {
     }
 }
 
-bool snake::key_move(char* background, int dir) {
+bool snake::move_snake(char* background, int dir) {
     set_head(MoveHead::HEAD);
     move(dir);
     if(check_body(background))

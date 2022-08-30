@@ -35,7 +35,7 @@ public:
     ~snake();
 
     bool check_body(char* background);
-    bool key_move(char* background, int dir);
+    bool move_snake(char* background, int dir);
 
     int move(int dir);
     int undo_move(int dir);
@@ -46,7 +46,7 @@ public:
     void update_tail();
     void clear_tail(char* background);
     void set_head(MoveHead head);
-
+    
     snakecoor snake_coor;
 };
 
