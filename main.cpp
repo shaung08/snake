@@ -30,22 +30,24 @@ void snake_thread(char* background) {
             continue;
         }
         else {
+            printf("----------hit the snake--------\nend\n");
             break;
         }
     }
 }
 
-/*
-void keyboard_thread() {
+
+void keyboard_thread(char* background) {
     keyboard userkey;
     char key;
+    int direction;
     while (true) {
         // get key
         key = userkey.get_keyboard();
         // get direction
         direction = userkey.get_direction(&key);
         // save direction to blocking queue
-        if(snakebody.key_move(*canvdraw.background, direction)) {
+        if(snakebody.move_snake(background, direction)) {
             // put canvas background into blocking queue
             continue;
         }
@@ -55,7 +57,7 @@ void keyboard_thread() {
         }
     }
 
-}*/
+}
 
 
 void canvas_thread() {
@@ -68,36 +70,11 @@ void canvas_thread() {
 
 
 int main () {
-
     std::thread s_thread(snake_thread, *canvdraw.background);
-    //std::thread keyboard_thread(*canvdraw.background);
+    std::thread k_thread(keyboard_thread, *canvdraw.background);
     std::thread c_thread(canvas_thread);
     s_thread.join();
+    k_thread.join();
     c_thread.join();
-    /*
-    canvas canvdraw;
-    snake snakebody(*canvdraw.background, std::floor(height/2), std::floor(width/2));
-    keyboard userkey;
-    canvdraw.show_canvas();
-
-    char key;
-    int direction;
-    bool status;
-
-    while (true)
-    {
-        key = userkey.get_keyboard();
-        direction = userkey.get_direction(&key);
-        if(snakebody.key_move(*canvdraw.background, direction)) {
-            canvdraw.show_canvas();
-            continue;
-        }
-        else {
-            printf("----------hit the snake--------\nend\n");
-            break;
-        }
-    }
-    */
-    
     return 0;
 }
