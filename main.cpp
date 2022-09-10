@@ -19,6 +19,7 @@ canvas canvdraw;
 snake snakebody(*canvdraw.background, std::floor(height/2), std::floor(width/2));
 std::mutex t_mutex;
 int direction;
+bool alive = true;
 
 void show_canvas() {
     if(snakebody.move_snake(*canvdraw.background, direction)) {
@@ -26,6 +27,7 @@ void show_canvas() {
         canvdraw.show_canvas();
     }
     else {
+        alive = false;
         printf("----------hit the snake--------\nend\n");
     }
     // show canvas background
@@ -34,7 +36,7 @@ void show_canvas() {
 void snake_thread(char* background) {
     // set moving speed
     float speed = 0.01; // 0.01s move a pixel
-    while (true) {
+    while (alive) {
         // move snake regular
         t_mutex.lock();
         direction = snakebody.snake_coor.dir_list[snakebody.snake_coor.dir_list.size()-1];
@@ -48,7 +50,7 @@ void snake_thread(char* background) {
 void keyboard_thread(char* background) {
     keyboard userkey;
     char key;
-    while (true) {
+    while (alive) {
         // get key
         key = userkey.get_keyboard();
         // get direction
@@ -57,8 +59,6 @@ void keyboard_thread(char* background) {
         direction = userkey.get_direction(&key);
         show_canvas();
         t_mutex.unlock();
-        sleep(1);
-
     }
 }
 
