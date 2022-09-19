@@ -3,10 +3,10 @@
 #include <time.h>
 #include <math.h>
 
-snake::snake(char* background, int height, int width)
+snake::snake(char* background, int height, int width, bool& is_food_)
 :snake_coor{height, width, height, width, 3, {}}
 {
-    init_snake(background);
+    init_snake(background, is_food_);
 };
 
 snake::~snake()
@@ -14,7 +14,8 @@ snake::~snake()
 };
 
 
-void snake::init_snake(char* background) {
+void snake::init_snake(char* background, bool& is_food_) {
+    is_food = &is_food_;
     set_head(MoveHead::TAIL);
     plt_snake(background);
     int x, dir;
@@ -90,6 +91,10 @@ void snake::clear_tail(char* background) {
     *(background+50*(snake_coor.tail_row-1)+snake_coor.tail_col) = ' ';
 };
 
+void snake::add_tail(char* background) {
+    *(background+50*(snake_coor.tail_row-1)+snake_coor.tail_col) = '*';
+};
+
 int snake::move(int dir) {
     switch (dir)
     {
@@ -153,11 +158,29 @@ bool snake::move_snake(char* background, int dir) {
         return false;
     else {
         snake_coor.dir_list.push_back(dir);
-        plt_snake(background);
-        set_head(MoveHead::TAIL);
-        clear_tail(background);
-        update_tail();
+        if (eat_food(background)) {
+            *is_food = false;
+            plt_snake(background);
+            set_head(MoveHead::TAIL);
+            add_tail(background);
+        }
+        else {
+            plt_snake(background);
+            set_head(MoveHead::TAIL);
+            clear_tail(background);
+            update_tail();
+        }
+
         return true;
     }
 
+}
+
+bool snake::eat_food(char* background) {
+    if (*(background+50*(snake_coor.head_row-1)+snake_coor.head_col) == '+') {
+        return true;
+    }
+    else {
+        return false;
+    }
 }

@@ -12,17 +12,28 @@
 #include "snake.cpp"
 #include "keyboard.cpp"
 #include "keyboard.h"
+#include "food.h"
+#include "food.cpp"
 
 #define width 50
 #define height 25
 
 canvas canvdraw;
-snake snakebody(*canvdraw.background, std::floor(height/2), std::floor(width/2));
+food food_(*canvdraw.background);
+snake snakebody(*canvdraw.background, std::floor(height/2), std::floor(width/2), food_.is_food);
 std::mutex t_mutex;
 int direction;
 bool alive = true;
 clock_t start,end;
 float speed = 1; // 0.01s move a pixel
+
+
+void food_thread() {
+    while (alive) {
+        if (!food_.is_food)
+           food_.create_food(*canvdraw.background);
+    }
+}
 
 void show_canvas() {
     if(snakebody.move_snake(*canvdraw.background, direction)) {
@@ -33,10 +44,9 @@ void show_canvas() {
         alive = false;
         printf("----------hit the snake--------\nend\n");
     }
-    // show canvas background
 }
 
-void snake_thread(char* background) {
+void snake_thread() {
     // set moving speed
     while (alive) {
         if (double(clock() - start )/CLOCKS_PER_SEC > 1.0) {
@@ -51,7 +61,7 @@ void snake_thread(char* background) {
 }
 
 
-void keyboard_thread(char* background) {
+void keyboard_thread() {
     keyboard userkey;
     char key;
     while (alive) {
@@ -59,7 +69,6 @@ void keyboard_thread(char* background) {
         key = userkey.get_keyboard();
         // get direction
         t_mutex.lock();
-        std::cout << "key_move_snake\n";
         direction = userkey.get_direction(&key);
         show_canvas();
         start = clock(); 
@@ -69,9 +78,11 @@ void keyboard_thread(char* background) {
 
 int main () {
     start = clock(); 
-    std::thread s_thread(snake_thread, *canvdraw.background);
-    std::thread k_thread(keyboard_thread, *canvdraw.background);
+    std::thread s_thread(snake_thread);
+    std::thread k_thread(keyboard_thread);
+    std::thread f_thread(food_thread);
     s_thread.join();
     k_thread.join();
+    f_thread.join();
     return 0;
 }
