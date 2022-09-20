@@ -1,5 +1,6 @@
 #include <iostream>
 #include "snake.h"
+#include "canvas.h"
 
 canvas::canvas() {
     init_canvas();

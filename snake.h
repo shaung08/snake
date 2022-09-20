@@ -29,24 +29,27 @@ class snake
 private:
     int* row;
     int* col;
+    bool* is_food;
     
 public:
-    snake(char* background, int height, int width);
+    snake(char* background, int height, int width, bool& is_food_);
     ~snake();
 
     bool check_body(char* background);
-    bool key_move(char* background, int dir);
+    bool move_snake(char* background, int dir);
+    bool eat_food(char* background);
 
     int move(int dir);
     int undo_move(int dir);
     int adjust_direction(int dir);
     
-    void init_snake(char* background);
+    void init_snake(char* background, bool& is_food_);
     void plt_snake(char* background);
     void update_tail();
     void clear_tail(char* background);
+    void add_tail(char* background);
     void set_head(MoveHead head);
-
+    
     snakecoor snake_coor;
 };
 

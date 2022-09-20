@@ -2,7 +2,6 @@
 #define CANVAS_H
 #include "snake.h"
 
-
 class canvas
 {
 public:
