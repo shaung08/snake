@@ -1,4 +1,7 @@
-
+#include "food.h"
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
 
 food::food(char* background) {
     init_food(background);

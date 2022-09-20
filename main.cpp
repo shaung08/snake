@@ -7,13 +7,9 @@
 #include <time.h>
 
 #include "canvas.h"
-#include "canvas.cpp"
 #include "snake.h"
-#include "snake.cpp"
-#include "keyboard.cpp"
 #include "keyboard.h"
 #include "food.h"
-#include "food.cpp"
 
 #define width 50
 #define height 25
